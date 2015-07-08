@@ -17,14 +17,12 @@
 // @see http://gent.ilcore.com/2011/03/how-not-to-trigger-layout-in-webkit.html
 const LayoutTriggers = {
 
-  'HTMLElement': {
+  'Element': {
     'method': [
       'focus',
       'getBoundingClientRect',
       'getClientRects',
       'focus',
-      'scrollByLines',
-      'scrollByPages',
       'scrollIntoView',
       'scrollIntoViewIfNeeded'
     ],
@@ -33,13 +31,13 @@ const LayoutTriggers = {
       'clientLeft',
       'clientTop',
       'clientWidth',
-      'innerText',
+      'innerHTML',
       'offsetHeight',
       'offsetLeft',
       'offsetParent',
       'offsetTop',
       'offsetWidth',
-      'outerText',
+      'outerHTML',
       'scrollHeight',
       'scrollLeft',
       'scrollTop',

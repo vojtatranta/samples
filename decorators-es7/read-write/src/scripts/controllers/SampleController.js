@@ -34,6 +34,9 @@ export default class SampleController {
 
     // Mutating styles is not.
     document.querySelector('.main').style.top = '100px';
+
+    // This will get bumped to the next round of calls.
+    this.writeSomeStuff();
   }
 
   @write
@@ -43,10 +46,10 @@ export default class SampleController {
     // Writing top here is fine.
     document.querySelector('.main').style.top = '200px';
 
-    // Calling focus() here can trigger layout because it's a read op.
+    // // Calling focus() here can trigger layout because it's a read op.
     document.querySelector('.main').focus();
 
-    // Same for offsetTop.
+    // // Same for offsetTop.
     document.querySelector('.main').offsetTop;
   }
 }
