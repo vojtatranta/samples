@@ -27,7 +27,7 @@ export function read (target, name, descriptor) {
   let readerOriginal = descriptor.value;
   let reader = readerOriginal.bind(target);
 
-  descriptor.value = function () {
+  descriptor.value = function (...args) {
     // If the context has changed since the initial setup
     // update the reference to reader.
     if (this !== target) {
@@ -35,9 +35,11 @@ export function read (target, name, descriptor) {
       target = this;
     }
 
-    jobLists.read.push(reader);
+    jobLists.read.push({
+      reader, args
+    });
+    scheduleJobRAFIfNeeded();
   }
-  scheduleJobRAFIfNeeded();
 }
 
 export function write (target, name, descriptor) {
@@ -45,7 +47,7 @@ export function write (target, name, descriptor) {
   let writerOriginal = descriptor.value;
   let writer = writerOriginal.bind(target);
 
-  descriptor.value = function () {
+  descriptor.value = function (...args) {
 
     // If the context has changed since the initial setup
     // update the reference to writer.
@@ -55,29 +57,34 @@ export function write (target, name, descriptor) {
       target = this;
     }
 
-    jobLists.write.push(writer);
+    jobLists.write.push({
+      writer, args
+    });
+    scheduleJobRAFIfNeeded();
   }
-  scheduleJobRAFIfNeeded();
 }
 
 function runJobs () {
+
   // Watch for the user trying to use setters
   // inside of a read task.
   DOMManager.disableWrites();
-  jobLists.read.forEach(job => job.call());
+  jobLists.read.forEach(job => job.reader.apply(null, job.args));
   DOMManager.enableWrites();
 
   // And vice-versa.
   DOMManager.disableReads();
-  jobLists.write.forEach(job => job.call());
+  jobLists.write.forEach(job => job.writer.apply(null, job.args));
   DOMManager.enableReads();
 
+  // TODO(@paullewis) Figure out a fail strategy if anything throws.
   jobLists.read.length = 0;
   jobLists.write.length = 0;
   jobRAFScheduled = false;
 }
 
 function scheduleJobRAFIfNeeded () {
+
   if (jobRAFScheduled)
     return;
 
