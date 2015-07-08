@@ -114,5 +114,7 @@ Then load the `index.html` file inside of `dist/`.
  - [ ] Allow scoping of mutations, e.g. `@read('.main')`.
  - [ ] Allow strict mode (throw errors over warnings).
  - [ ] Write tests for all available properties.
+ - [ ] Recovery for failed tasks in the schedule
+ - [ ] Noop mode for DOMManager
 
 Author: [@aerotwist](https://twitter.com/aerotwist)
