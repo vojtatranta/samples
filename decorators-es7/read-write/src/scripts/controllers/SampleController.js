@@ -28,14 +28,25 @@ export default class SampleController {
   @read
   readSomeStuff () {
     console.log('read');
-    document.querySelector('.main').style.top = '100px';
+
+    // Reading offsetTop here is fine.
     console.log(document.querySelector('.main').offsetTop);
+
+    // Mutating styles is not.
+    document.querySelector('.main').style.top = '100px';
   }
 
   @write
   writeSomeStuff () {
     console.log('write');
+
+    // Writing top here is fine.
+    document.querySelector('.main').style.top = '200px';
+
+    // Calling focus() here can trigger layout because it's a read op.
     document.querySelector('.main').focus();
+
+    // Same for offsetTop.
     document.querySelector('.main').offsetTop;
   }
 }
