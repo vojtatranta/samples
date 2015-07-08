@@ -18,6 +18,14 @@
 const LayoutTriggers = {
 
   'Element': {
+    'method': [
+      'focus',
+      'getBoundingClientRect',
+      'getClientRects',
+      'focus',
+      'scrollIntoView',
+      'scrollIntoViewIfNeeded'
+    ],
     'get': [
       'clientHeight',
       'clientLeft',
@@ -31,14 +39,6 @@ const LayoutTriggers = {
   },
 
   'HTMLElement': {
-    'method': [
-      'focus',
-      'getBoundingClientRect',
-      'getClientRects',
-      'focus',
-      'scrollIntoView',
-      'scrollIntoViewIfNeeded'
-    ],
     'get': [
       'innerHTML',
       'offsetHeight',
