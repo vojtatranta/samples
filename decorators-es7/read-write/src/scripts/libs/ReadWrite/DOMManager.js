@@ -34,6 +34,10 @@ class DOMManager {
 
   disableReads () {
 
+    // Effectively an #ifdef to switch this off for production.
+    if (process.env.IS_PROD)
+      return;
+
     this.candidatesKeys.forEach(candidatesKey => {
 
       let getters = this.candidates[candidatesKey].get;
@@ -91,6 +95,10 @@ class DOMManager {
 
   enableReads () {
 
+    // Effectively an #ifdef to switch this off for production.
+    if (process.env.IS_PROD)
+      return;
+
     this.candidatesKeys.forEach(candidatesKey => {
       let getters = this.candidates[candidatesKey].get;
 
@@ -124,11 +132,20 @@ class DOMManager {
 
   disableWrites () {
 
+    // Effectively an #ifdef to switch this off for production.
+    if (process.env.IS_PROD)
+      return;
+
     // TODO(@paullewis) Limit the scope of this.
     this.updateObserver.observe(document.body, this.updateObserverConfig);
   }
 
   enableWrites () {
+
+    // Effectively an #ifdef to switch this off for production.
+    if (process.env.IS_PROD)
+      return;
+
     let mutations = this.updateObserver.takeRecords();
     if (mutations.length) {
       let e = new Error ('DOM mutated during read block');

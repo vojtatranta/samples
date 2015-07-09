@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-var isProd = false;
 var gulp = require('gulp'),
     fs = require('fs'),
     del = require('del'),
@@ -26,7 +25,9 @@ var gulp = require('gulp'),
     gutil = require('gulp-util'),
     babelify = require('babelify'),
     minifycss = require('gulp-minify-css'),
+    envify = require('envify/custom'),
     uglify = require('gulp-uglify'),
+    util = require('gulp-util'),
     sass = require('gulp-sass'),
     streamify = require('gulp-streamify'),
     runSequence = require('run-sequence'),
@@ -35,13 +36,18 @@ var gulp = require('gulp'),
     path = require('path');
 
 var version = null;
+var isDevelopmentVersion = util.env.development;
 
 function createBundle(url) {
   return browserify({
     entries: [url],
-    debug: !isProd
-  }).transform(babelify.configure({
+    debug: isDevelopmentVersion
+  })
+  .transform(babelify.configure({
     optional: ["es7.decorators"]
+  }))
+  .transform(envify({
+    IS_PROD: !isDevelopmentVersion
   }));
 }
 
@@ -69,7 +75,7 @@ function buildBundle(bundleName) {
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       .pipe(source(name));
 
-  if (isProd) {
+  if (isDevelopmentVersion) {
     b = b.pipe(streamify(uglify()));
   }
 

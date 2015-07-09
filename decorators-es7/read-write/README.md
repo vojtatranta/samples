@@ -104,10 +104,18 @@ There's a gulpfile, which will use Babelify to convert the ES6 and ES7 (the deco
 
 ```
 npm install
-gulp
+npm run dev
 ```
 
 Then load the `index.html` file inside of `dist/`.
+
+If you want to disable the warnings, which you probably would for a production environment, you should run:
+
+```
+npm run prod
+```
+
+This uses [envify](https://github.com/hughsk/envify/) to effectively `#ifdef` out the warnings. Uglify should remove the dead code by virtue of it being unreachable.
 
 ## TODOs
 
@@ -118,6 +126,6 @@ Then load the `index.html` file inside of `dist/`.
  - [ ] Write tests for all available properties.
  - [ ] Ensure all read / write properties are accounted for.
  - [ ] Recovery for failed tasks in the schedule
- - [ ] Noop mode for DOMManager
+ - [X] Noop mode for DOMManager
 
 Author: [@aerotwist](https://twitter.com/aerotwist)
