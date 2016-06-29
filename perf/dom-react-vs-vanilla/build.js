@@ -16,9 +16,7 @@
  */
 
 var searchIndex = 0;
-var searchTerms = ['tree', 'water', 'fire', 'earth', 'metal', 'wood',
-    'blue', 'red', 'yellow', 'mountain', 'tunnel', 'train', 'brick',
-    'architecture'];
+var searchTerms = ['tree', 'water', 'fire', 'earth', 'metal', 'wood', 'blue', 'red', 'yellow', 'mountain', 'tunnel', 'train', 'brick', 'architecture'];
 var main = document.querySelector('main');
 var images = [];
 var results = [];
@@ -31,27 +29,62 @@ var lastJSStartExecutionTime = 0;
  * update to the dataset we want to update the "Last updated" string
  * to get set.
  */
-var FlickrImageTime = React.createClass({
-  render: function() {
-    return (
-      <h3>Last updated: {moment(this.lastUpdated).fromNow()}</h3>
-    )
+var FlickrImageHeader = React.createClass({
+  render: function () {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'h1',
+        null,
+        this.title
+      ),
+      React.createElement(
+        'div',
+        { className: 'flickr-image-container' },
+        React.createElement('img', { src: this.imgUrl })
+      ),
+      React.createElement(
+        'h2',
+        null,
+        this.props.ownerName,
+        ' - ',
+        this.props.license
+      )
+    );
   }
-})
+});
+
+var FlickrImageTime = React.createClass({
+  render: function () {
+    return React.createElement(
+      'h3',
+      null,
+      'Last updated: ',
+      moment(this.lastUpdated).fromNow()
+    );
+  }
+});
 
 var FlickrImage = React.createClass({
-  render: function() {
+  render: function () {
+    console.log(this.props.image);
     // Render away!
-    return (
-      <div className="flickr-image">
-        <h1>{this.props.image.title}</h1>
-        <div className="flickr-image-container">
-          <img src={this.props.image.imgUrl} />
-        </div>
-        <h2>{this.props.image.ownerName} - {this.props.license}</h2>
-        <FlickrImageTime lastUpdated={this.props.image.lastUpdated} />
-        <a href={this.props.image.flickrUrl}>{this.props.image.flickrUrl}</a>
-      </div>
+    return React.createElement(
+      'div',
+      { className: 'flickr-image' },
+      React.createElement(FlickrImageHeader, {
+        title: this.props.image.title,
+        imgUrl: this.props.image.imgUrl,
+        ownerName: this.props.image.ownerName,
+        license: this.props.image.license
+      }),
+      React.createElement(FlickrImageTime, { lastUpdated: this.props.image.lastUpdated }),
+      React.createElement(
+        'a',
+        { href: this.props.image.flickrUrl },
+        this.props.image.flickrUrl
+      )
     );
   }
 });
@@ -95,26 +128,25 @@ var FlickrImages = React.createClass({
       var onNextFrameDone = function () {
         window.results.push({
           size: this.state.data.length,
-          jsTime: Math.round(jsExecutionTime),
-          totalTime: Math.round(window.performance.now() - startDrawTime)
+          jsTime: jsExecutionTime,
+          totalTime: window.performance.now() - startDrawTime
         });
 
         refreshButton.disabled = false;
-      }
+      };
 
       requestAnimationFrame(onNextFrameDone.bind(this));
-    }
+    };
 
     // Search for 100 images and move to the next search term.
-    flickr.search(searchTerms[searchIndex], 100)
-        .then(onFlickr.bind(this));
+    flickr.search(searchTerms[searchIndex], 100).then(onFlickr.bind(this));
 
     searchIndex++;
     searchIndex %= searchTerms.length;
   },
 
   getInitialState: function () {
-    return {data: []};
+    return { data: [] };
   },
 
   componentDidMount: function () {
@@ -124,24 +156,21 @@ var FlickrImages = React.createClass({
     var downloadButton = React.findDOMNode(this).querySelector('.download');
 
     // Grab some more images.
-    refreshButton.addEventListener('click',
-        this.loadImagesFromFlickr.bind(this));
+    refreshButton.addEventListener('click', this.loadImagesFromFlickr.bind(this));
 
     // Make a zip for the results.
     downloadButton.addEventListener('click', function () {
 
       var zip = new JSZip();
 
-      resultsStr = window.results.reduce(function(previous, value, index) {
-        return previous +
-            value.size + ',' + value.jsTime + ',' + value.totalTime + '\n';
+      resultsStr = window.results.reduce(function (previous, value, index) {
+        return previous + value.size + ',' + value.jsTime + ',' + value.totalTime + '\n';
       }, 'Size,JavaScript Time,Total Time\n');
 
       zip.file('results-react.csv', resultsStr);
 
-      var blob = zip.generate({type:'blob'});
+      var blob = zip.generate({ type: 'blob' });
       saveAs(blob, 'results-react.zip');
-
     });
   },
 
@@ -149,21 +178,25 @@ var FlickrImages = React.createClass({
    * Render the `<FlickrImage>`s based on the current data set.
    */
   render: function () {
-    return (
-      <div className="flickr-image-list">
-        <button className="refresh">Add images</button>
-        <button className="download">Download results</button>
-      {
-        this.state.data.map(function(image, index) {
-          return <FlickrImage key={image.id} image={image} />;
-        })
-      }
-      </div>
+    return React.createElement(
+      'div',
+      { className: 'flickr-image-list' },
+      React.createElement(
+        'button',
+        { className: 'refresh' },
+        'Add images'
+      ),
+      React.createElement(
+        'button',
+        { className: 'download' },
+        'Download results'
+      ),
+      this.state.data.map(function (image, index) {
+        return React.createElement(FlickrImage, { key: index, image: image });
+      })
     );
   }
 });
 
 // Fire up React.
-React.render(
-  <FlickrImages />, main
-);
+React.render(React.createElement(FlickrImages, null), main);
