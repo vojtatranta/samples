@@ -35,7 +35,7 @@ var FlickrImageTime = React.createClass({
       'h3',
       null,
       'Last updated: ',
-      moment(this.lastUpdated).fromNow()
+      moment(this.props.lastUpdate * 1000).fromNow()
     );
   }
 });
@@ -63,7 +63,7 @@ var FlickrImage = React.createClass({
         ' - ',
         this.props.license
       ),
-      React.createElement(FlickrImageTime, { lastUpdated: this.props.image.lastUpdated }),
+      React.createElement(FlickrImageTime, { lastUpdate: this.props.image.lastUpdate }),
       React.createElement(
         'a',
         { href: this.props.image.flickrUrl },

@@ -98,8 +98,8 @@ function updateMain () {
   requestAnimationFrame(function() {
     results.push({
       size: images.length,
-      jsTime: jsExecutionTime,
-      totalTime: window.performance.now() - startDrawTime
+      jsTime: Math.round(jsExecutionTime),
+      totalTime: Math.round(window.performance.now() - startDrawTime)
     });
     refreshButton.disabled = false;
     downloadButton.disabled = false;
