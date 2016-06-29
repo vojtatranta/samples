@@ -22,6 +22,7 @@ var images = [];
 var results = [];
 var lastStartDrawTime = 0;
 var lastJSStartExecutionTime = 0;
+var PureRenderMixin = React.addons.PureRenderMixin;
 
 /**
  * The React component for each individual image.
@@ -30,6 +31,7 @@ var lastJSStartExecutionTime = 0;
  * to get set.
  */
 var FlickrImageTime = React.createClass({
+  mixins: [PureRenderMixin],
   render: function () {
     return React.createElement(
       'h3',
@@ -41,6 +43,7 @@ var FlickrImageTime = React.createClass({
 });
 
 var FlickrImage = React.createClass({
+  mixins: [PureRenderMixin],
   render: function () {
     // Render away!
     return React.createElement(
@@ -80,7 +83,7 @@ var FlickrImage = React.createClass({
  * updating.
  */
 var FlickrImages = React.createClass({
-
+  mixins: [PureRenderMixin],
   loadImagesFromFlickr: function () {
     var refreshButton = React.findDOMNode(this).querySelector('.refresh');
     refreshButton.disabled = true;
